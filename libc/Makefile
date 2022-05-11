@@ -2,7 +2,7 @@ DEFAULT_HOST!=../util/default-host.sh
 HOST?=DEFAULT_HOST
 HOSTARCH!=../util/target-triplet-to-arch.sh $(HOST)
 
-CFLAGS?= -g
+CFLAGS?=-Ofast
 CPPFLAGS?=
 LDFLAGS?= -s
 LIBS?=
@@ -57,22 +57,28 @@ BINARIES=libk.a
 all: $(BINARIES)
 
 libc.a: $(OBJS)
-	$(AR) rcs $@ $(OBJS)
+	echo "AR    $@"
+	@$(AR) rcs $@ $(OBJS)
 
 libk.a: $(LIBK_OBJS)
-	$(AR) rcs $@ $(LIBK_OBJS)
+	echo "AR    $@"
+	@$(AR) rcs $@ $(LIBK_OBJS)
 
 .c.o:
-	$(CC) -MD -c $< -o $@ -std=gnu11 $(CFLAGS) $(CPPFLAGS)
+	echo "CC    $<    $@"
+	@$(CC) -MD -c $< -o $@ -std=c2x $(CFLAGS) $(CPPFLAGS)
 
 .c.S:
-	$(CC) -MD -c $< -o $@ $(CFLAGS) $(CPPFLAGS)
+	echo "AS    $<    $@"
+	@$(CC) -MD -c $< -o $@ $(CFLAGS) $(CPPFLAGS)
 
 .c.libk.o:
-	$(CC) -MD -c $< -o $@ -std=gnu11 $(LIBK_CFLAGS) $(LIBK_CPPFLAGS)
+	echo "CC    $<    $@"
+	@$(CC) -MD -c $< -o $@ -std=gnu11 $(LIBK_CFLAGS) $(LIBK_CPPFLAGS)
 
 .S.libk.o:
-	$(CC) -MD -c $< -o $@ $(LIBK_CFLAGS) $(LIBK_CPPFLAGS)
+	echo "AS    $<    $@"
+	@$(CC) -MD -c $< -o $@ $(LIBK_CFLAGS) $(LIBK_CPPFLAGS)
 
 clean:
 	rm -f $(BINARIES) *.a

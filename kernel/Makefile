@@ -2,7 +2,7 @@ DEFAULT_HOST!=../util/default-host.sh
 HOST?=DEFAULT_HOST
 HOSTARCH!=../util/target-triplet-to-arch.sh $(HOST)
 
-CFLAGS?= -g
+CFLAGS?=-Ofast
 CPPFLAGS?=
 LDFLAGS?=
 LIBS?=
@@ -65,10 +65,12 @@ $(ARCHDIR)/crtbegin.o $(ARCHDIR)/crtend.o:
 	OBJ=`$(CC) $(CFLAGS) $(LDFLAGS) -print-file-name=$(@F)` && cp "$$OBJ" $@
 
 .c.o:
-	$(CC) -MD -c $< -o $@ -std=gnu11 $(CFLAGS) $(CPPFLAGS)
+	echo "CC    $<    $@"
+	@$(CC) -MD -c $< -o $@ -std=c2x $(CFLAGS) $(CPPFLAGS)
 
 .S.o:
-	$(CC) -MD -c $< -o $@ $(CFLAGS) $(CPPFLAGS)
+	echo "CC    $<    $@"
+	@$(CC) -MD -c $< -o $@ $(CFLAGS) $(CPPFLAGS)
 
 clean:
 	rm -f tfos.elf
